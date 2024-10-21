@@ -33,7 +33,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           shell: pwsh  
           run: |
-            $zipFiles = Get-ChildItem -Filter "*.zip"  | Select-Object -ExpandProperty VersionInfo | Select-Object -ExpandProperty FileName
+            $zipFiles = Get-ChildItem -Recurse -Filter "*.zip"  | Select-Object -ExpandProperty VersionInfo | Select-Object -ExpandProperty FileName
             foreach($zipFile in $zipFiles) {
               gh release upload ${{ github.event.release.tag_name }} $zipFile
             }
