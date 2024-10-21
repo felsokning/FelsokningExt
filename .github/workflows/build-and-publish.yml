@@ -1,0 +1,36 @@
+name: Build and Publish
+
+# Required Since Release Creation in GitHub (itself) doesn't create a push (not remote)
+on:
+  release:
+    types:
+    - created
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+        - name: Check out code
+          uses: actions/checkout@v4
+        - name: Compile Visual Studio Project with MSBuild for x86
+          shell: cmd 
+          run: ${{ '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" && msbuild FelsokningExt.vcxproj /p:configuration=release /p:platform=x86' }}
+          working-directory: /FelsokningExt
+        - name: Compile Visual Studio Project with MSBuild for x86
+          shell: cmd 
+          run: ${{ '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" && msbuild FelsokningExt.vcxproj /p:configuration=release /p:platform=x64' }}
+          working-directory: /FelsokningExt
+        - name: Zip x86 Binary
+          run: zip -r ${{ github.event.repository.name }}.x86.zip .
+          working-directory: /FelsokningExt/debug
+        - name: Zip x64 Binary
+          run: zip -r ${{ github.event.repository.name }}.x64.zip .
+          working-directory: /FelsokningExt/x64/debug
+        - name: Upload Release Assets
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          run: |
+            for f in $(find . -name '*.zip'); do
+              gh release upload ${{ github.event.release.tag_name }} $f
+            done
+          working-directory: /FelsokningExt/
