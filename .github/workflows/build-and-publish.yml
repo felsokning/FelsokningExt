@@ -28,7 +28,7 @@ jobs:
           working-directory: /FelsokningExt/x64/debug
         - name: Upload Release Assets
           env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           run: |
             for f in $(find . -name '*.zip'); do
               gh release upload ${{ github.event.release.tag_name }} $f
