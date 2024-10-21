@@ -22,10 +22,10 @@ jobs:
           working-directory: ${{ github.workspace }}\FelsokningExt
         - name: Zip x86 Binary
           run: zip -r ${{ github.event.repository.name }}.x86.zip .
-          working-directory: ${{ github.workspace }}\FelsokningExt\debug
+          working-directory: ${{ github.workspace }}\FelsokningExt\release
         - name: Zip x64 Binary
           run: zip -r ${{ github.event.repository.name }}.x64.zip .
-          working-directory: ${{ github.workspace }}\FelsokningExt\x64\debug
+          working-directory: ${{ github.workspace }}\FelsokningExt\x64\release
         - name: Upload Release Assets
           env:
             GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
