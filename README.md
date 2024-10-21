@@ -15,5 +15,5 @@ For example, on my local machine, the load command would be: `.load C:\ext\Felso
 ### Feature
 For each thread found above the target frame size, the thread id is output as a hyperlink (recognisable only to Windbg), which you can click on to change to that thread's context. Below is example of this from a dump I took of the Spotify process.
 
-![Image showing thread hypelink](.\images\thread_hyperlink.PNG)
+![Image showing thread hypelink](./images/thread_hyperlink.PNG)
 
