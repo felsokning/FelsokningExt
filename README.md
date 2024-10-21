@@ -1,13 +1,13 @@
 # FelsokningExt
 Just another Windbg Extension
 
-## deep
-`deep` allows you to traverse all threads in the dump (or live process - not yet tested) to find threads that are above `x` frames.
-
-### Loading the Extension
+## Loading the Extension
 Download the target flavor from [Releases](https://github.com/felsokning/FelsokningExt/releases) and extract the contents. You should place the dll in a folder you'll recall, later, as you'll need to type the path into Windbg to load the extension.
 
 For example, on my local machine, the load command would be: `.load C:\ext\FelsokningExt.dll`
+
+## deep
+`deep` allows you to traverse all threads in the dump (or live process - not yet tested) to find threads that are above `x` frames.
 
 ### Usage
 `!FelsokningExt.deep <number>` or `!deep <number>` will resolve in Windbg and output the results.
