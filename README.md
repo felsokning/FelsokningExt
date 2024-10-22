@@ -17,3 +17,5 @@ For each thread found above the target frame size, the thread id is output as a 
 
 ![Image showing thread hypelink](./images/thread_hyperlink.PNG)
 
+#### NOTE:
+This is meant to be a drop-in replace for `!procdumpext.deep`, as procdumpext no longer ships with the Windows SDK.
