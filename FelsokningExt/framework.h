@@ -2,6 +2,7 @@
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files
+#include <cstring>
 #include <vector>
 #include <iostream>
 #include <format>
@@ -12,3 +13,4 @@
 #include <DbgEng.h>
 #include <Windows.h>
 #include <strsafe.h>
+#include <Psapi.h>

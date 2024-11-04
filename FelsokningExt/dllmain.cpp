@@ -1,48 +1,10 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
+#include "helpers.h"
 
 #define APPNAME _T("FelsokningExt")
 
 using namespace std;
-
-HRESULT IsKernelMode(_In_ PDEBUG_CLIENT4 DebugClient)
-{
-    auto Status = S_OK;
-    ULONG Class;
-    ULONG Qualifier;
-
-    IDebugControl* DebugControl = nullptr;
-    __try {
-        if ((Status = DebugClient->QueryInterface(__uuidof(IDebugControl), (PVOID*)&DebugControl)) != S_OK) 
-        {
-            __leave;
-        }
-
-        if ((Status = DebugControl->GetDebuggeeType(&Class, &Qualifier)) != S_OK) 
-        {
-            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "Could not get debuggee type.\n");
-            __leave;
-        }
-
-        if (Class != DEBUG_CLASS_USER_WINDOWS) 
-        {
-
-            DebugControl->Output(DEBUG_OUTPUT_WARNING, "FelsokningExt: Only works in user-mode debugging mode.\n");
-            Status = S_FALSE;
-
-            __leave;
-        }
-    }
-    __finally {
-
-        if (DebugControl) {
-
-            DebugControl->Release();
-        }
-    }
-
-    return Status;
-}
 
 VOID CALLBACK DebugExtensionUninitialize(VOID)
 {
@@ -72,13 +34,15 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
     return TRUE;
 }
 
-HRESULT CALLBACK deep(_In_ PDEBUG_CLIENT4 Client, _In_opt_ PCSTR args)
+HRESULT CALLBACK deep(_In_ PDEBUG_CLIENT8 Client, _In_ PCSTR args)
 {
-    if (SUCCEEDED(IsKernelMode(Client)))
+    helpers h{};
+    helpers* internalHelper = &h;
+    if (SUCCEEDED(internalHelper->IsUserMode(Client)))
     {
         auto Status = S_OK;
-        IDebugControl* pDebugControl;
-        if (SUCCEEDED(Client->QueryInterface(__uuidof(IDebugControl), (void**)&pDebugControl)))
+        IDebugControl7* pDebugControl = nullptr;
+        if (SUCCEEDED(Client->QueryInterface(__uuidof(IDebugControl7), (void**)&pDebugControl)))
         {
             std::string test = args;
             if (auto size = test.size(); size == 0)
@@ -88,10 +52,10 @@ HRESULT CALLBACK deep(_In_ PDEBUG_CLIENT4 Client, _In_opt_ PCSTR args)
             }
 
             ULONG targetSize = atoi(test.c_str());
-            IDebugSymbols* pDebugSymbols;
-            if (SUCCEEDED(Client->QueryInterface(__uuidof(IDebugSymbols), (void**)&pDebugSymbols)))
+            IDebugSymbols5* pDebugSymbols = nullptr;
+            if (SUCCEEDED(Client->QueryInterface(__uuidof(IDebugSymbols5), (void**)&pDebugSymbols)))
             {
-                IDebugSystemObjects4* pDebugSystemObjects;
+                IDebugSystemObjects4* pDebugSystemObjects = nullptr;
                 if (SUCCEEDED(Client->QueryInterface(__uuidof(IDebugSystemObjects4), (void**)&pDebugSystemObjects)))
                 {
                     ULONG numberOfThreads = 0;
@@ -126,7 +90,7 @@ HRESULT CALLBACK deep(_In_ PDEBUG_CLIENT4 Client, _In_opt_ PCSTR args)
                                 // Reset thread context to original.
                                 if (!SUCCEEDED(pDebugSystemObjects->SetCurrentThreadId(currentThreadId)))
                                 {
-                                    pDebugControl->Output(DEBUG_OUTPUT_WARNING, "Unable to return to original thread context.");
+                                    pDebugControl->Output(DEBUG_OUTPUT_WARNING, "Unable to return to original thread context.\n");
                                 }
                             }
                         }
