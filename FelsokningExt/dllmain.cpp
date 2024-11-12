@@ -106,6 +106,7 @@ HRESULT CALLBACK seek(_In_ PDEBUG_CLIENT8 pDebugClient, _In_opt_ PCSTR args)
                 else
                 {
                     pDebugControl->Output(DEBUG_OUTPUT_NORMAL, "FelsokningExt by John Bailey\n\tUsage:\n\t\t!seek -e <module!method>");
+                    return S_OK;
                 }
 
                 // Do le maths.
@@ -180,7 +181,11 @@ HRESULT CALLBACK seek(_In_ PDEBUG_CLIENT8 pDebugClient, _In_opt_ PCSTR args)
                         {
                             printf("Unable to obtain the GetTotalNumberThreads.\n");
                         }
+
+                        pDebugSystemObjects->Release();
                     }
+
+                    pDebugSymbols->Release();
                 }
             }
 
