@@ -24,6 +24,6 @@ For each thread found above the target frame size, the thread id is output as a 
 `seek` allows you traverse all threads in the dump (or live process - not yet tested) to find threads that match a given symbol.
 
 ### Usage
-`!FelsokningExt.seek -q -s <symbol>` or `!deep -s <symbol>` will resolve in Windbg and output the results. `-q` (quiet) will not output the thread id in the results.
+`!FelsokningExt.seek -q -s <symbol>` or `!seek -s <symbol>` will resolve in Windbg and output the results. `-q` (quiet) will not output the thread id in the results.
 
 ![Image showing seek](./images/seek.png)
