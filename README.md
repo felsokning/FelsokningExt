@@ -2,7 +2,7 @@
 Just another Windbg Extension
 
 #### NOTE:
-This is meant to be a drop-in replace for `!procdumpext.deep`, as procdumpext no longer ships with the Windows SDK.
+This is meant to be a drop-in replace for `!procdumpext`, as procdumpext no longer ships with the Windows SDK.
 
 ## Loading the Extension
 Download the target flavor from [Releases](https://github.com/felsokning/FelsokningExt/releases) and extract the contents. You should place the dll in a folder you'll recall, later, as you'll need to type the path into Windbg to load the extension.
