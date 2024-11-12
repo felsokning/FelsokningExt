@@ -7,6 +7,8 @@
 
 using namespace std;
 
+const char seekUsage[] = "FelsokningExt by John Bailey\n\tUsage:\n\t\t* Specify '-q' (quiet) to omit the per-thread header\n\t\t* Specify '-s' to include stacks that contain 'symbol'\n\tExample:\n\t\t!seek -s hostfxr!execute_app\n\n\tTo file an issue or feature request: https://github.com/felsokning/FelsokningExt/issues/new/choose";
+
 /// <summary>
 ///     The DebugExtensionUninitialize callback function is called by the engine to uninitialize the DbgEng extension DLL before it is unloaded.
 /// </summary>
@@ -80,7 +82,7 @@ HRESULT CALLBACK seek(_In_ PDEBUG_CLIENT8 pDebugClient, _In_opt_ PCSTR args)
                         if (quietCheck.find(L's') == std::string::npos
                             && quietMode == false)
                         {
-                            pDebugControl->Output(DEBUG_OUTPUT_NORMAL, "FelsokningExt by John Bailey\n\tUsage:\n\t\t!seek -q -s <module!method>\n\t\t!seek -s <module!method>");
+                            pDebugControl->Output(DEBUG_OUTPUT_NORMAL, seekUsage);
                             return S_OK;
                         }
                     }
@@ -89,13 +91,13 @@ HRESULT CALLBACK seek(_In_ PDEBUG_CLIENT8 pDebugClient, _In_opt_ PCSTR args)
                         wstring sCheck = wv[0];
                         if (sCheck.find(L's') == std::string::npos)
                         {
-                            pDebugControl->Output(DEBUG_OUTPUT_NORMAL, "FelsokningExt by John Bailey\n\tUsage:\n\t\t!seek -q -s <module!method>\n\t\t!seek -s <module!method>");
+                            pDebugControl->Output(DEBUG_OUTPUT_NORMAL, seekUsage);
                             return S_OK;
                         }
                     }
                     else
                     {
-                        pDebugControl->Output(DEBUG_OUTPUT_NORMAL, "FelsokningExt by John Bailey\n\tUsage:\n\t\t!seek -q -s <module!method>\n\t\t!seek -s <module!method>");
+                        pDebugControl->Output(DEBUG_OUTPUT_NORMAL, seekUsage);
                         return S_OK;
                     }
 
@@ -105,7 +107,7 @@ HRESULT CALLBACK seek(_In_ PDEBUG_CLIENT8 pDebugClient, _In_opt_ PCSTR args)
                 }
                 else
                 {
-                    pDebugControl->Output(DEBUG_OUTPUT_NORMAL, "FelsokningExt by John Bailey\n\tUsage:\n\t\t!seek -e <module!method>");
+                    pDebugControl->Output(DEBUG_OUTPUT_NORMAL, seekUsage);
                     return S_OK;
                 }
 
