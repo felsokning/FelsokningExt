@@ -1,6 +1,9 @@
 # FelsokningExt
 Just another Windbg Extension
 
+#### NOTE:
+This is meant to be a drop-in replace for `!procdumpext.deep`, as procdumpext no longer ships with the Windows SDK.
+
 ## Loading the Extension
 Download the target flavor from [Releases](https://github.com/felsokning/FelsokningExt/releases) and extract the contents. You should place the dll in a folder you'll recall, later, as you'll need to type the path into Windbg to load the extension.
 
@@ -17,5 +20,10 @@ For each thread found above the target frame size, the thread id is output as a 
 
 ![Image showing thread hypelink](./images/thread_hyperlink.PNG)
 
-#### NOTE:
-This is meant to be a drop-in replace for `!procdumpext.deep`, as procdumpext no longer ships with the Windows SDK.
+## seek
+`seek` allows you traverse all threads in the dump (or live process - not yet tested) to find threads that match a given symbol.
+
+### Usage
+`!FelsokningExt.seek -q -s <symbol>` or `!deep -s <symbol>` will resolve in Windbg and output the results. `-q` (quiet) will not output the thread id in the results.
+
+![Image showing seek](./images/seek.png)
