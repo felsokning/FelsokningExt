@@ -1,0 +1,20 @@
+name: Build
+
+on:
+    pull_request:
+        types: [opened, reopened, edited, synchronize, ready_for_review]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+        - name: Check out code
+          uses: actions/checkout@v4
+        - name: Compile Visual Studio Project with MSBuild for x86
+          shell: cmd 
+          run: ${{ '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" && msbuild FelsokningExt.vcxproj /p:configuration=release /p:platform=x86' }}
+          working-directory: ${{ github.workspace }}\FelsokningExt
+        - name: Compile Visual Studio Project with MSBuild for x64
+          shell: cmd 
+          run: ${{ '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" && msbuild FelsokningExt.vcxproj /p:configuration=release /p:platform=x64' }}
+          working-directory: ${{ github.workspace }}\FelsokningExt
