@@ -15,10 +15,15 @@ For example, on my local machine, the load command would be: `.load C:\ext\Felso
 ### Usage
 `!FelsokningExt.deep <number>` or `!deep <number>` will resolve in Windbg and output the results.
 
-### Feature
-For each thread found above the target frame size, the thread id is output as a hyperlink (recognisable only to Windbg), which you can click on to change to that thread's context. Below is example of this from a dump I took of the Spotify process.
+![Image showing thread hyperlink](./images/thread_hyperlink.PNG)
 
-![Image showing thread hypelink](./images/thread_hyperlink.PNG)
+## hide
+`hide` allows you traverse all threads in the dump (or live process - not yet tested) to find threads that match a given symbol and omit them from the thread output.
+
+### Usage
+`!FelsokningExt.hide -q -s <symbol>` or `!hide -s <symbol>` will resolve in Windbg and output the results. `-q` (quiet) will not output the thread id in the results.
+
+![Image showing hide](./images/hide.png)
 
 ## seek
 `seek` allows you traverse all threads in the dump (or live process - not yet tested) to find threads that match a given symbol.
