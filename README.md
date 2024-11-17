@@ -15,7 +15,7 @@ For example, on my local machine, the load command would be: `.load C:\ext\Felso
 ### Usage
 `!FelsokningExt.deep <number>` or `!deep <number>` will resolve in Windbg and output the results.
 
-![Image showing thread hypelink](./images/thread_hyperlink.PNG)
+![Image showing thread hyperlink](./images/thread_hyperlink.PNG)
 
 ## hide
 `hide` allows you traverse all threads in the dump (or live process - not yet tested) to find threads that match a given symbol and omit them from the thread output.
@@ -23,7 +23,7 @@ For example, on my local machine, the load command would be: `.load C:\ext\Felso
 ### Usage
 `!FelsokningExt.hide -q -s <symbol>` or `!hide -s <symbol>` will resolve in Windbg and output the results. `-q` (quiet) will not output the thread id in the results.
 
-![Image showing seek](./images/hide.png)
+![Image showing hide](./images/hide.png)
 
 ## seek
 `seek` allows you traverse all threads in the dump (or live process - not yet tested) to find threads that match a given symbol.
