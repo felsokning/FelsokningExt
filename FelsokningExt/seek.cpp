@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "helpers.h"
+#include <wrl/client.h> // For Microsoft::WRL::ComPtr
 
 #pragma warning(disable : 4996) // _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 
 using namespace std;
+using Microsoft::WRL::ComPtr;
 
 const char seekUsage[] = "FelsokningExt by John Bailey\n\tUsage:\n\t\t* Specify '-q' (quiet) to omit the per-thread header\n\t\t* Specify '-s' to include stacks that contain 'symbol'\n\tExample:\n\t\t!seek -s hostfxr!execute_app\n\n\tTo file an issue or feature request: https://github.com/felsokning/FelsokningExt/issues/new/choose\n";
 
@@ -19,8 +21,8 @@ HRESULT CALLBACK seek(_In_ PDEBUG_CLIENT8 pDebugClient, _In_opt_ PCSTR args)
 
     if (SUCCEEDED(internalHelper->IsUserMode(pDebugClient)))
     {
-        IDebugControl7* pDebugControl = nullptr;
-        if (SUCCEEDED(pDebugClient->QueryInterface(__uuidof(IDebugControl7), (void**)&pDebugControl)))
+        ComPtr<IDebugControl7> pDebugControl;
+        if (SUCCEEDED(pDebugClient->QueryInterface(__uuidof(IDebugControl7), &pDebugControl)))
         {
             if (SUCCEEDED(mbstowcs_s(&convertedChars, wideArgs, _countof(wideArgs), args, _TRUNCATE)))
             {
@@ -36,8 +38,7 @@ HRESULT CALLBACK seek(_In_ PDEBUG_CLIENT8 pDebugClient, _In_opt_ PCSTR args)
                         {
                             quietMode = true;
                         }
-                        if (quietCheck.find(L's') == std::string::npos
-                            && quietMode == false)
+                        if (quietCheck.find(L's') == std::string::npos && !quietMode)
                         {
                             pDebugControl->Output(DEBUG_OUTPUT_NORMAL, seekUsage);
                             return S_OK;
@@ -58,7 +59,6 @@ HRESULT CALLBACK seek(_In_ PDEBUG_CLIENT8 pDebugClient, _In_opt_ PCSTR args)
                         return S_OK;
                     }
 
-
                     // Last should be our target to search for.
                     target = wv[wvCapacity - 1];
                 }
@@ -69,18 +69,17 @@ HRESULT CALLBACK seek(_In_ PDEBUG_CLIENT8 pDebugClient, _In_opt_ PCSTR args)
                 }
 
                 // Do le maths.
-                IDebugSymbols5* pDebugSymbols = nullptr;
-                if (SUCCEEDED(pDebugClient->QueryInterface(__uuidof(IDebugSymbols5), (void**)&pDebugSymbols)))
+                ComPtr<IDebugSymbols5> pDebugSymbols;
+                if (SUCCEEDED(pDebugClient->QueryInterface(__uuidof(IDebugSymbols5), &pDebugSymbols)))
                 {
-                    IDebugSystemObjects4* pDebugSystemObjects = nullptr;
-                    if (SUCCEEDED(pDebugClient->QueryInterface(__uuidof(IDebugSystemObjects4), (void**)&pDebugSystemObjects)))
+                    ComPtr<IDebugSystemObjects4> pDebugSystemObjects;
+                    if (SUCCEEDED(pDebugClient->QueryInterface(__uuidof(IDebugSystemObjects4), &pDebugSystemObjects)))
                     {
                         ULONG numberOfThreads = 0;
                         if (SUCCEEDED(pDebugSystemObjects->GetNumberThreads(&numberOfThreads)))
                         {
                             std::vector<ULONG> Ids(numberOfThreads); // Debug Thread Ids
                             std::vector<ULONG> SysIds(numberOfThreads); // System Thread Ids (Not needed - leaving for future use)
-                            numberOfThreads--;
                             if (SUCCEEDED(pDebugSystemObjects->GetThreadIdsByIndex(0, numberOfThreads, Ids.data(), SysIds.data())))
                             {
                                 ULONG currentThreadId = 0;
@@ -121,7 +120,6 @@ HRESULT CALLBACK seek(_In_ PDEBUG_CLIENT8 pDebugClient, _In_opt_ PCSTR args)
                                                         pDebugControl->ControlledOutput(DEBUG_OUTCTL_DML, DEBUG_OUTPUT_NORMAL, "Thread Id: <link cmd=\"~%llus\">%llu\n</link>", Ids[iterationThreads], Ids[iterationThreads]);
                                                     }
 
-
                                                     pDebugControl->OutputStackTrace(DEBUG_OUTPUT_NORMAL, stackFrames.data(), frames, DEBUG_STACK_ARGUMENTS | DEBUG_STACK_FRAME_ADDRESSES | DEBUG_STACK_SOURCE_LINE | DEBUG_STACK_FRAME_NUMBERS);
                                                 }
                                             }
@@ -138,17 +136,11 @@ HRESULT CALLBACK seek(_In_ PDEBUG_CLIENT8 pDebugClient, _In_opt_ PCSTR args)
                         }
                         else
                         {
-                            printf("Unable to obtain the GetTotalNumberThreads.\n");
+                            pDebugControl->Output(DEBUG_OUTPUT_ERROR, "Unable to obtain the GetTotalNumberThreads.\n");
                         }
-
-                        pDebugSystemObjects->Release();
                     }
-
-                    pDebugSymbols->Release();
                 }
             }
-
-            pDebugControl->Release();
         }
     }
 

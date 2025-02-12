@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "helpers.h"
+#include <wrl/client.h> // For Microsoft::WRL::ComPtr
 
 #pragma warning(disable : 4996) // _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 
 using namespace std;
+using Microsoft::WRL::ComPtr;
 
 HRESULT CALLBACK deep(_In_ PDEBUG_CLIENT8 pDebugClient, _In_ PCSTR args)
 {
@@ -12,29 +14,28 @@ HRESULT CALLBACK deep(_In_ PDEBUG_CLIENT8 pDebugClient, _In_ PCSTR args)
     if (SUCCEEDED(internalHelper->IsUserMode(pDebugClient)))
     {
         auto Status = S_OK;
-        IDebugControl7* pDebugControl = nullptr;
-        if (SUCCEEDED(pDebugClient->QueryInterface(__uuidof(IDebugControl7), (void**)&pDebugControl)))
+        ComPtr<IDebugControl7> pDebugControl;
+        if (SUCCEEDED(pDebugClient->QueryInterface(__uuidof(IDebugControl7), &pDebugControl)))
         {
             std::string test = args;
-            if (auto size = test.size(); size == 0)
+            if (test.empty())
             {
                 pDebugControl->Output(DEBUG_OUTPUT_EXTENSION_WARNING, "A target size MUST be supplied to target the frame size[s] against.\n  Example: !deep 43\n");
                 return S_OK;
             }
 
             ULONG targetSize = atoi(test.c_str());
-            IDebugSymbols5* pDebugSymbols = nullptr;
-            if (SUCCEEDED(pDebugClient->QueryInterface(__uuidof(IDebugSymbols5), (void**)&pDebugSymbols)))
+            ComPtr<IDebugSymbols5> pDebugSymbols;
+            if (SUCCEEDED(pDebugClient->QueryInterface(__uuidof(IDebugSymbols5), &pDebugSymbols)))
             {
-                IDebugSystemObjects4* pDebugSystemObjects = nullptr;
-                if (SUCCEEDED(pDebugClient->QueryInterface(__uuidof(IDebugSystemObjects4), (void**)&pDebugSystemObjects)))
+                ComPtr<IDebugSystemObjects4> pDebugSystemObjects;
+                if (SUCCEEDED(pDebugClient->QueryInterface(__uuidof(IDebugSystemObjects4), &pDebugSystemObjects)))
                 {
                     ULONG numberOfThreads = 0;
                     if (SUCCEEDED(pDebugSystemObjects->GetNumberThreads(&numberOfThreads)))
                     {
                         std::vector<ULONG> Ids(numberOfThreads); // Debug Thread Ids
                         std::vector<ULONG> SysIds(numberOfThreads); // System Thread Ids (Not needed - leaving for future use)
-                        numberOfThreads--;
                         if (SUCCEEDED(pDebugSystemObjects->GetThreadIdsByIndex(0, numberOfThreads, Ids.data(), SysIds.data())))
                         {
                             ULONG currentThreadId = 0;
@@ -68,28 +69,22 @@ HRESULT CALLBACK deep(_In_ PDEBUG_CLIENT8 pDebugClient, _In_ PCSTR args)
                     }
                     else
                     {
-                        printf("Unable to obtain the GetTotalNumberThreads.\n");
+                        pDebugControl->Output(DEBUG_OUTPUT_ERROR, "Unable to obtain the GetTotalNumberThreads.\n");
                     }
-
-                    pDebugSystemObjects->Release();
                 }
                 else
                 {
-                    printf("Unable to obtain the IDebugSystemObjects.\n");
+                    pDebugControl->Output(DEBUG_OUTPUT_ERROR, "Unable to obtain the IDebugSystemObjects.\n");
                 }
-
-                pDebugSymbols->Release();
             }
             else
             {
-                printf("Unable to obtain the IDebugSymbols.\n");
+                pDebugControl->Output(DEBUG_OUTPUT_ERROR, "Unable to obtain the IDebugSymbols.\n");
             }
-
-            pDebugControl->Release();
         }
         else
         {
-            printf("Unable to obtain the IDebugControl.\n");
+            pDebugControl->Output(DEBUG_OUTPUT_ERROR, "Unable to obtain the IDebugControl.\n");
         }
 
         return Status;
