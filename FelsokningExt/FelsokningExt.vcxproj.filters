@@ -44,6 +44,12 @@
     <ClCompile Include="seek.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="deepseek.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="deephide.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FelsokningExt.rc">

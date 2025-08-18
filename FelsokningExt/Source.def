@@ -5,5 +5,7 @@ EXPORTS
     DebugExtensionInitialize
     DebugExtensionUninitialize
     deep
+    deephide
+    deepseek
     hide
     seek
