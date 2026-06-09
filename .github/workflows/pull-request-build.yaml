@@ -6,16 +6,10 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     steps:
         - name: Check out code
           uses: actions/checkout@v4
-        - name: Install v145 Build Tools (provision toolset)
-          shell: powershell
-          run: |
-            $vsInstaller = "$env:TEMP\vs_buildtools.exe"
-            Invoke-WebRequest -Uri "https://aka.ms/vs/17/release/vs_BuildTools.exe" -OutFile $vsInstaller
-            & $vsInstaller --quiet --wait --norestart --add Microsoft.VisualStudio.Component.VC.Tools.14.5 --includeRecommended
         - name: Compile Visual Studio Project with MSBuild for x86
           shell: cmd 
           run: ${{ '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" && msbuild FelsokningExt.vcxproj /p:configuration=release /p:platform=x86' }}
