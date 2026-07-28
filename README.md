@@ -9,8 +9,21 @@ Download the target flavor from [Releases](https://github.com/felsokning/Felsokn
 
 For example, on my local machine, the load command would be: `.load C:\ext\FelsokningExt.dll`
 
+## setsymbolservers
+`setsymbolservers` adds publicly known symbol servers to the sympath in the current session context. We do not touch _NT_SYMBOL_PATH nor _NT_ALT_SYMBOL_PATH.
+
+![Image showing setsymbolservers](./images/setsymbolservers.png)
+
+### Usage
+
+`!FelsokningExt.setsymbolservers` or `!setsymbolservers` - To add the preset symbols servers ***without*** local caching
+
+`!FelsokningExt.setsymbolservers <path>` or `!setsymbolservers <path>` - To add the preset symbols servers ***with*** local caching
+
 ## deep
 `deep` allows you to traverse all threads in the dump (or live process - not yet tested) to find threads that are above `x` frames.
+
+![Image showing deep finding single thread](./images/deep.png)
 
 ### Usage
 `!FelsokningExt.deep <number>` or `!deep <number>` will resolve in Windbg and output the results.
