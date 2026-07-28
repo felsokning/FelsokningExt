@@ -151,6 +151,7 @@
     <ClInclude Include="helpers.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="symhelpers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="deep.cpp" />
@@ -165,6 +166,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="seek.cpp" />
+    <ClCompile Include="setsymbolservers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FelsokningExt.rc" />
