@@ -12,17 +12,26 @@ using namespace std;
 using Microsoft::WRL::ComPtr;
 
 static constexpr const wchar_t* kServers[] = {
+	// Microsoft symbol servers
     L"https://msdl.microsoft.com/download/symbols",
+	// Chromium symbol servers
     L"https://chromium-browser-symsrv.commondatastorage.googleapis.com/msdl",
+	// Mozilla symbol servers
     L"https://symbols.mozilla.org/",
+	// Unity symbol servers
     L"https://symbolserver.unity3d.com/",
+	// Citrix symbol servers
     L"https://ctxsym.citrix.com/symbols/download",
+	// Intel symbol servers
     L"https://software.intel.com/sites/downloads/symbols/microsoft",
+	// NVIDIA symbol servers
     L"https://driver-symbols.nvidia.com/symbolCache",
+	// AMD symbol servers
     L"https://download.amd.com/dir/bin",
+	// NuGet symbol servers
     L"https://symbols.nuget.org/download/symbols",
-    L"http://symbols.autodesk.com/symbols",
-    L"http://symbolserver.unity3d.com/"
+	// Autodesk symbol servers
+    L"http://symbols.autodesk.com/symbols"
 };
 
 inline static std::string TrimArgs(PCSTR args) {
@@ -51,8 +60,10 @@ HRESULT __stdcall setsymbolservers(_In_ PDEBUG_CLIENT8 pDebugClient, _In_opt_ PC
         HRESULT hr = pDebugClient->QueryInterface(__uuidof(IDebugControl7), &pDebugControl);
         if (FAILED(hr)) return hr;
 
-        // 1. Build compound path string (.sympath natively supports semicolon-delimited arrays)
-        std::string cmdBuf = ".sympath ";
+        // 1. Build compound path string (.sympath+ will append rather than overwrite)
+        // + Specifies that the new locations will be appended to (rather than replace) the previous symbol search path.
+        // See: https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/-sympath--set-symbol-path-
+        std::string symPathCmdBuf = ".sympath+ ";
         std::string trimmedArgs = TrimArgs(args);
         std::string urlSuffix;
         for (size_t i = 0; i < _countof(kServers); ++i) {
@@ -76,12 +87,19 @@ HRESULT __stdcall setsymbolservers(_In_ PDEBUG_CLIENT8 pDebugClient, _In_opt_ PC
             }
         }
 
-        cmdBuf += urlSuffix;
-
+        symPathCmdBuf += urlSuffix;
+		std::string symNoisyCmdBuffer = "!sym noisy";
+		std::string reloadCmdBuffer = ".reload";
         // 2. Execute as a single debug command. 
         // DEBUG_OUTCTL_THIS_CLIENT | DEBUG_OUTCTL_NOT_LOGGED keeps it silent & session-bound.
         if (SUCCEEDED(hr)) {
-            hr = pDebugControl->Execute(DEBUG_OUTCTL_THIS_CLIENT | DEBUG_OUTCTL_NOT_LOGGED, cmdBuf.c_str(), 0);
+            hr = pDebugControl->Execute(DEBUG_OUTCTL_THIS_CLIENT | DEBUG_OUTCTL_NOT_LOGGED, symPathCmdBuf.c_str(), 0);
+            if (SUCCEEDED(hr)) {
+				hr = pDebugControl->Execute(DEBUG_OUTCTL_THIS_CLIENT | DEBUG_OUTCTL_NOT_LOGGED, symNoisyCmdBuffer.c_str(), 0);
+                if (SUCCEEDED(hr)) {
+                    hr = pDebugControl->Execute(DEBUG_OUTCTL_THIS_CLIENT | DEBUG_OUTCTL_NOT_LOGGED, reloadCmdBuffer.c_str(), 0);
+                }
+            }
         }
 
         return hr; // S_OK = path set successfully. Symbol download status is irrelevant here.
