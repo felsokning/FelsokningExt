@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-2025-vs2026
     steps:
         - name: Check out code
-          uses: actions/checkout@v4
+          uses: actions/checkout@v7
         - name: Compile Visual Studio Project with MSBuild for x86
           shell: cmd 
           run: ${{ '"C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat" && msbuild FelsokningExt.vcxproj /p:configuration=release /p:platform=x86' }}
@@ -18,3 +18,15 @@ jobs:
           shell: cmd 
           run: ${{ '"C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat" && msbuild FelsokningExt.vcxproj /p:configuration=release /p:platform=x64' }}
           working-directory: ${{ github.workspace }}\FelsokningExt
+        - name: Run `!deep` in CDB With Debugger Extension Loaded
+          shell: cmd
+          run: cdb.exe -z ${{ github.workspace }}\fable_anniversary_867695_crash_2025_1_20T23_28_42C0.mdmp -c ".load ${{ github.workspace }}\FelsokningExt\x64\release\FelsokningExt.dll;!deep 18;q"
+          working-directory: C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\
+        - name: Run `!seek` in CDB With Debugger Extension Loaded
+          shell: cmd
+          run: cdb.exe -z ${{ github.workspace }}\fable_anniversary_867695_crash_2025_1_20T23_28_42C0.mdmp -c ".load ${{ github.workspace }}\FelsokningExt\x64\release\FelsokningExt.dll;!seek -s CoreMessaging!Microsoft::CoreUI::Dispatch::WaitController::Callback_WaitAny;q"
+          working-directory: C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\
+        - name: Run `!deepseek` in CDB With Debugger Extension Loaded
+          shell: cmd
+          run: cdb.exe -z ${{ github.workspace }}\fable_anniversary_867695_crash_2025_1_20T23_28_42C0.mdmp -c ".load ${{ github.workspace }}\FelsokningExt\x64\release\FelsokningExt.dll;!deepseek 18 CoreMessaging!Microsoft::CoreUI::Dispatch::WaitController::Callback_WaitAny;q"
+          working-directory: C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\
