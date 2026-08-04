@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-2025-vs2026
     steps:
         - name: Check out code
-          uses: actions/checkout@v4
+          uses: actions/checkout@v7
         - name: Compile Visual Studio Project with MSBuild for x86
           shell: cmd 
           run: ${{ '"C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat" && msbuild FelsokningExt.vcxproj /p:configuration=release /p:platform=x86' }}
@@ -18,10 +18,10 @@ jobs:
           shell: cmd 
           run: ${{ '"C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat" && msbuild FelsokningExt.vcxproj /p:configuration=release /p:platform=x64' }}
           working-directory: ${{ github.workspace }}\FelsokningExt
-        - name: Hunt Windows SDK in 32 Location
-          shell: pwsh
-          run: Get-ChildItem
-          working-directory: C:\Program Files\Windows Kits\10\Debuggers\
+        # - name: Hunt Windows SDK in 32 Location
+        #   shell: pwsh
+        #   run: Get-ChildItem
+        #   working-directory: C:\Program Files\Windows Kits\10\Debuggers\
         - name: Hunt Windows SDK in 64 Location
           shell: pwsh
           run: Get-ChildItem
