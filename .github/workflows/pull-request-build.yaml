@@ -18,3 +18,12 @@ jobs:
           shell: cmd 
           run: ${{ '"C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat" && msbuild FelsokningExt.vcxproj /p:configuration=release /p:platform=x64' }}
           working-directory: ${{ github.workspace }}\FelsokningExt
+        - name: Install ProcDump
+          shell: pwsh
+          run: Invoke-RestMethod -Uri "https://download.sysinternals.com/files/Procdump.zip" -OutFile Procdump.zip; Expand-Archive -Path ./Procdump.zip;
+        - name: Dump PowerShell Process
+          shell: cmd
+          run: procdump.exe -accepteula -ma -n 1 -r pwsh
+        - name: Run CDB With Debugger Extension Loaded
+          shell: cmd
+          run: cdb -z pwsh.DMP -a ${{ github.workspace }}\FelsokningExt\x64\release\FelsokningExt.dll -c "!deep 5;qd"
