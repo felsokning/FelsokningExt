@@ -20,5 +20,5 @@ jobs:
           working-directory: ${{ github.workspace }}\FelsokningExt
         - name: Run CDB With Debugger Extension Loaded
           shell: cmd
-          run: cdb.exe -z ${{ github.workspace }}\fable_anniversary_867695_crash_2025_1_20T23_28_42C0.mdmp -c ".load ${{ github.workspace }}\FelsokningExt\x64\release\FelsokningExt.dll;!deep 5"
+          run: cdb.exe -z ${{ github.workspace }}\fable_anniversary_867695_crash_2025_1_20T23_28_42C0.mdmp -c ".load ${{ github.workspace }}\FelsokningExt\x64\release\FelsokningExt.dll;!deep 12;q"
           working-directory: C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\
