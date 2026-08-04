@@ -18,15 +18,7 @@ jobs:
           shell: cmd 
           run: ${{ '"C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat" && msbuild FelsokningExt.vcxproj /p:configuration=release /p:platform=x64' }}
           working-directory: ${{ github.workspace }}\FelsokningExt
-        # - name: Hunt Windows SDK in 32 Location
-        #   shell: pwsh
-        #   run: Get-ChildItem
-        #   working-directory: C:\Program Files\Windows Kits\10\Debuggers\
-        - name: Hunt Windows SDK in 64 Location
-          shell: pwsh
-          run: Get-ChildItem
-          working-directory: C:\Program Files (x86)\Windows Kits\10\Debuggers\x64
         - name: Run CDB With Debugger Extension Loaded
           shell: cmd
-          run: cdb -z fable anniversary_867695_crash_2025_1_20T23_28_42C0.mdmp -a ${{ github.workspace }}\FelsokningExt\x64\release\FelsokningExt.dll -c "!deep 5;qd"
+          run: C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\cdb.exe -z fable anniversary_867695_crash_2025_1_20T23_28_42C0.mdmp -a ${{ github.workspace }}\FelsokningExt\x64\release\FelsokningExt.dll -c "!deep 5;qd"
           working-directory: ${{ github.workspace }}
