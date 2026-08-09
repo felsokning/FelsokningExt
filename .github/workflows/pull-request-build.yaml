@@ -23,7 +23,7 @@ jobs:
           run: cdb.exe -z ${{ github.workspace }}\fable_anniversary_867695_crash_2025_1_20T23_28_42C0.mdmp -c ".logopen /u ${{ github.workspace }}\workflow_log.txt;.load ${{ github.workspace }}\FelsokningExt\x64\release\FelsokningExt.dll;!deep 18;;!seek -s CoreMessaging!Microsoft::CoreUI::Dispatch::WaitController::Callback_WaitAny;!deepseek 18 CoreMessaging!Microsoft::CoreUI::Dispatch::WaitController::Callback_WaitAny;.logclose;q"
           working-directory: C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\
         - name: Upload Debugger Command Results File
-          uses: actions/upload-artifact@v4
+          uses: actions/upload-artifact@v7
           if: always()
           with:
             name: debugger-command-results
