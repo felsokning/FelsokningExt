@@ -20,7 +20,7 @@ jobs:
           working-directory: ${{ github.workspace }}\FelsokningExt
         - name: Run Debugger Commands in CDB With Debugger Extension Loaded
           shell: cmd
-          run: cdb.exe -z ${{ github.workspace }}\fable_anniversary_867695_crash_2025_1_20T23_28_42C0.mdmp -c ".logopen ${{ github.workspace }}\workflow_log.txt /u;.load ${{ github.workspace }}\FelsokningExt\x64\release\FelsokningExt.dll;!deep 18;;!seek -s CoreMessaging!Microsoft::CoreUI::Dispatch::WaitController::Callback_WaitAny;!deepseek 18 CoreMessaging!Microsoft::CoreUI::Dispatch::WaitController::Callback_WaitAny;.logclose;q"
+          run: cdb.exe -z ${{ github.workspace }}\fable_anniversary_867695_crash_2025_1_20T23_28_42C0.mdmp -c ".logopen /u ${{ github.workspace }}\workflow_log.txt;.load ${{ github.workspace }}\FelsokningExt\x64\release\FelsokningExt.dll;!deep 18;;!seek -s CoreMessaging!Microsoft::CoreUI::Dispatch::WaitController::Callback_WaitAny;!deepseek 18 CoreMessaging!Microsoft::CoreUI::Dispatch::WaitController::Callback_WaitAny;.logclose;q"
           working-directory: C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\
         - name: Upload Debugger Command Results File
           uses: actions/upload-artifact@v4
